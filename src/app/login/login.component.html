@@ -1,0 +1,22 @@
+<div class="bg-white rounded-xl shadow-lg max-w-3xl m-auto flex p-4 flex-col">
+    <img class="size-[40%] mx-auto "src="bkicon.png" alt="BK icon">
+    <p class="mx-auto text-xl mb-2 -mt-6">Student Smart Printing Service</p>
+    <p [class.hidden] = "!isUnknown" class="mx-auto text-xl mb-2 text-red-700 font-medium">Unknown email or password!</p>
+    <p [class.hidden] = "!alreadyAvailableUser" class="mx-auto text-xl mb-2 text-red-700 font-medium">Existing user!</p>
+    <p [class.hidden] = "!invalidSyntax" class="mx-auto text-xl mb-2 text-red-700 font-medium">Invalid email syntax!</p>
+    <div class="flex mx-auto flex-col space-y-2">
+        <input (keyup.enter) = "submit()" type="email" class="focus:outline-none focus:border-blue-800 focus:border-2 border-black border-[1px] rounded-lg w-[28rem] p-2" [(ngModel)]="userMail" placeholder="Example: example.name@hcmut.edu.vn ">
+        <input (keyup.enter) = "submit()" type="password" class="focus:outline-none focus:border-blue-800 focus:border-2 border-[1px] border-black rounded-lg w-[28rem] p-2" [(ngModel)]="userPassword" placeholder="Enter your password: ">
+        @if (isSigningUp) {
+            <input type="text" name="student-id" placeholder="Enter your student's ID: " class="focus:outline-none focus:border-blue-800 focus:border-2 border-black border-[1px] rounded-lg w-[28rem] p-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" [(ngModel)]="userID">
+            <label for="user-avatar text-sm">Choose your profile picture (optional): </label>
+            <input type="file" name="user-avatar" (change)="obtainAvatarUpload($event)">
+        }
+    </div>
+    <div class="flex mx-auto mt-4 space-x-3">
+        <button (click)="submitLogin()" [class.hidden]="isSigningUp" class="duration-0 border-[1px] hover:border-2 border-black rounded-md p-2 bg-slate-200 hover:bg-slate-300 hover:duration-75 hover:font-medium">Login</button>
+        <button (click)="clickSignUp()" [class.hidden]="isSigningUp" class="duration-0 border-[1px] hover:border-2 border-black rounded-md p-2 bg-slate-200 hover:bg-slate-300 hover:duration-75 hover:font-medium">Sign up?</button>
+        <button (click)="isSigningUp = false" [class.hidden]="!isSigningUp" class="duration-0 border-[1px] hover:border-2 border-black rounded-md p-2 bg-slate-200 hover:bg-slate-300 hover:duration-75 hover:font-medium">Login?</button>
+        <button (click)="submitSignUp()" [class.hidden]="!isSigningUp" class="duration-0 border-[1px] hover:border-2 border-black rounded-md p-2 bg-slate-200 hover:bg-slate-300 hover:duration-75 hover:font-medium">Sign up now!</button>
+    </div>
+</div>

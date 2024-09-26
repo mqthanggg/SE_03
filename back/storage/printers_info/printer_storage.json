@@ -1,0 +1,56 @@
+[
+    {
+        "id": "0",
+        "manufacturer": "HP",
+        "model": "OfficeJet",
+        "desc": "Supports color printing",
+        "location": {
+            "campus": "LTK",
+            "building": "B1",
+            "room": 213
+        },
+        "status": "available",
+        "logs": [
+            {
+                "userID": "2252761",
+                "printerID": "0",
+                "file": "Capstone_Project_Autumn_2023.pdf",
+                "printing_start": "9/26/2024, 3:38:15 PM",
+                "printing_end": "9/26/2024, 3:38:25 PM",
+                "copies": 3,
+                "size": "A4"
+            },
+            {
+                "userID": "2252761",
+                "printerID": "0",
+                "file": "Capstone_Project_Autumn_2023.pdf",
+                "printing_start": "9/26/2024, 3:40:02 PM",
+                "printing_end": "9/26/2024, 3:40:12 PM",
+                "copies": 3,
+                "size": "A4"
+            },
+            {
+                "userID": "2252761",
+                "printerID": "0",
+                "file": "Capstone_Project_Autumn_2023.pdf",
+                "printing_start": "9/26/2024, 3:40:15 PM",
+                "printing_end": "9/26/2024, 3:40:25 PM",
+                "copies": 3,
+                "size": "A5"
+            }
+        ]
+    },
+    {
+        "id": "1",
+        "manufacturer": "Cannon",
+        "model": "PIXMA",
+        "desc": "Supports both sided printing",
+        "location": {
+            "campus": "LTK",
+            "building": "B1",
+            "room": 210
+        },
+        "status": "available",
+        "logs": []
+    }
+]

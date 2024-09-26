@@ -1,0 +1,114 @@
+<div class="flex rounded-xl flex-col shadow-lg bg-white max-w-7xl mx-auto relative pt-1 pl-2 p-6" id="print-main">
+    <div class="m-3">
+        <p class="text-2xl">List of available printers: </p>
+        <div class="flex space-x-4 overflow-x-auto">
+            @for (printer of listOfPrinters; track printer.id) {
+                @if (printer.status !== "disabled") {
+                    <div [id]="generateID(printer.id)" (click)="printerClicked(printer.id)" class="printer duration-0 hover:cursor-pointer hover:bg-blue-100 hover:duration-75 bg-white border-slate-500 border-2 p-6 rounded-lg">
+                        <img class="mx-auto size-32 pointer-events-none" src="printer.png" alt="Printer image">
+                        <div class="pointer-events-none flex">
+                            <p class="font-medium">Manufacturer: &nbsp;</p>
+                            <p class="">{{printer.manufacturer}}</p>
+                        </div>
+                        <div class="pointer-events-none flex">
+                            <p class="font-medium">Model: &nbsp;</p>
+                            <p class="">{{printer.model}}</p>
+                        </div>
+                        <div class="pointer-events-none flex">
+                            <p class="font-medium">Description: &nbsp;</p>
+                            <p class="">{{printer.desc}}</p>
+                        </div>
+                        <div class="pointer-events-none flex">
+                            <p class="font-medium">Location: &nbsp;</p>
+                            <p class="">{{printer.location.campus + " - " + printer.location.building + " - " + printer.location.room}}</p>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    @if(selectedPrinter !== undefined){
+        <div class="m-3">
+            <div class="text-2xl">Upload files:</div>
+                @if(!validFile){
+                    <p class="text-red-600 text-2xl">Invalid file extensions!</p>
+                }
+                <input class="mt-2" type="file" (change)="checkFileUpload($event)">
+        </div>
+        @if (this.selectedFile !== undefined) {
+            <div class="m-3">
+                <div class="text-2xl">Document pages: {{this.accurateFilePages}}</div>
+            </div>
+        }
+        <div class="m-3">
+            <div class="text-2xl">Paper size:</div>
+            <div id="paper-size" (click)="toggleSizeVisible()" tabindex="1" class="hover:cursor-pointer shadow-lg flex rounded-lg border-2 max-w-sm p-3 mt-2 justify-between border-white">
+                @if (selectedSize !== undefined) {
+                    <div class="space-x-4 flex items-center hover:bg-blue-100 bg-white">
+                        <p class="font-bold text-xl pointer-events-none">{{selectedSize.type}}</p>
+                        <p class="pointer-events-none">{{selectedSize.width + " x " + selectedSize.height}}</p>
+                    </div>
+                }
+                @else{
+                    <p class="text-xl">Select paper size here:</p>
+                }
+                <div class="">
+                    <img class="size-3 max-h-none max-w-none rotate-180" src="drop_down.png" alt="Arrow up">
+                    <img class="size-3 max-h-none max-w-none" src="drop_down.png" alt="Arrow down">
+                </div>
+            </div>
+            <div [class.hidden]="!sizeVisible" id="size-drop-down" tabindex="1" class="border-white max-w-sm flex shadow-lg rounded-lg border-2 p-3 justify-between overflow-y-scroll flex-col max-h-36">
+                @for (size of listOfPaperSize; track size.type) {
+                    <div [id]="size.type" (click)="sizeClicked(size.type)" class="space-x-4 flex items-center p-1 hover:bg-blue-100 bg-white">
+                        <p class="font-bold text-xl pointer-events-none">{{size.type}}</p>
+                        <p class="pointer-events-none">{{size.width + " x " + size.height}}</p>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="m-3">
+            <p class="text-2xl">Copies: </p>
+            <input class="shadow-lg flex rounded-lg border-2 max-w-xl p-3 mt-2 justify-between w-fit" type="number" name="papers" [(ngModel)]="copies">
+            @if (filePages*copies > userPapers) {
+                <p class="text-red-600 m-3 text-2xl">Insufficient papers!</p>
+            }
+        </div>
+        <div class="m-3">
+            <p class="text-2xl">Printing mode:</p>
+            <div id="paper-mode" (click)="toggleModeVisible()" tabindex="1" class="hover:cursor-pointer shadow-lg flex rounded-lg border-2 max-w-sm p-3 mt-2 justify-between border-white">
+                @if (selectedMode !== '') {
+                    <div class="space-x-4 flex items-center hover:bg-blue-100 bg-white">
+                        @if (selectedMode === 'one-sided') {
+                            <p class="text-xl pointer-events-none">One sided</p>
+                        }
+                        @else {
+                            <p class="text-xl pointer-events-none">Two sided</p>
+                        }
+                    </div>
+                }
+                @else{
+                    <p class="text-xl">Select printing mode here:</p>
+                }
+                <div class="">
+                    <img class="size-3 max-h-none max-w-none rotate-180" src="drop_down.png" alt="Arrow up">
+                    <img class="size-3 max-h-none max-w-none" src="drop_down.png" alt="Arrow down">
+                </div>
+            </div>
+            @if (modeVisible) {
+                <div class="border-white max-w-sm flex shadow-lg rounded-lg border-2 p-3 justify-between overflow-y-scroll flex-col max-h-36">
+                    <div id="one-sided" (click)="selectMode('one-sided')" class="space-x-4 flex items-center p-1 hover:bg-blue-100 bg-white">
+                        <p class="text-xl pointer-events-none">One sided</p>
+                    </div>
+                    <div id="two-sided" (click)="selectMode('two-sided')" class="space-x-4 flex items-center p-1 hover:bg-blue-100 bg-white">
+                        <p class="text-xl pointer-events-none">Two sided</p>
+                    </div>
+    
+                </div>
+            }
+        </div>
+        <button (click)="sendPrintingReq()" [class.pointer-events-auto] = "(selectedPrinter !== undefined) && (selectedSize !== undefined) && (selectedMode !== '') && (copies !== 0) && (selectedFile !== undefined) && (copies*filePages <= userPapers)"   class="pointer-events-none duration-0 mx-auto text-2xl rounded-md border-slate-500 border-2 p-2 hover:bg-blue-100 hover:duration-75 ">Send printing request!</button>
+    }
+    @else {
+        <p class="text-red-600 m-3 text-2xl">Please select a printer!</p>
+    }
+</div>
