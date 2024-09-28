@@ -1,4 +1,4 @@
-<div class="flex rounded-xl flex-col shadow-lg bg-white max-w-7xl mx-auto relative pt-1 pl-2 p-6" id="print-main">
+<div class="flex rounded-xl flex-col shadow-lg bg-white max-w-7xl mx-auto relative pt-1 pl-2 p-6 z-0" id="print-main">
     <div class="m-3">
         <p class="text-2xl">List of available printers: </p>
         <div class="flex space-x-4 overflow-x-auto">
@@ -33,7 +33,7 @@
                 @if(!validFile){
                     <p class="text-red-600 text-2xl">Invalid file extensions!</p>
                 }
-                <input class="mt-2" type="file" (change)="checkFileUpload($event)">
+                <input id="file-upload" class="mt-2" type="file" (change)="checkFileUpload($event)">
         </div>
         @if (this.selectedFile !== undefined) {
             <div class="m-3">
@@ -106,9 +106,32 @@
                 </div>
             }
         </div>
-        <button (click)="sendPrintingReq()" [class.pointer-events-auto] = "(selectedPrinter !== undefined) && (selectedSize !== undefined) && (selectedMode !== '') && (copies !== 0) && (selectedFile !== undefined) && (copies*filePages <= userPapers)"   class="pointer-events-none duration-0 mx-auto text-2xl rounded-md border-slate-500 border-2 p-2 hover:bg-blue-100 hover:duration-75 ">Send printing request!</button>
+        <div class="m-3">
+            <p class="text-2xl">Required A4 papers: {{getRequiredPapers()}}</p>
+        </div>
+        <button (click)="sendPrintingReq()" [class.pointer-events-auto] = "(selectedPrinter !== undefined) && (selectedSize !== undefined) && (selectedMode !== '') && (copies !== 0) && (selectedFile !== undefined) && (copies*filePages <= userPapers)"   class="pointer-events-none duration-0 mx-auto text-2xl rounded-md border-slate-500 border-2 p-2 hover:bg-blue-100 hover:duration-75 ">{{(selectedPrinter !== undefined) && (selectedSize !== undefined) && (selectedMode !== '') && (copies !== 0) && (selectedFile !== undefined) && (copies*filePages <= userPapers) ? "Send printing request!" : "Fill all the options!"}}</button>
     }
     @else {
         <p class="text-red-600 m-3 text-2xl">Please select a printer!</p>
     }
+</div>
+<div id="pop-up-bg" class="hidden w-screen h-screen bg-slate-400 bg-opacity-50 absolute top-0 left-0">
+</div>
+<div id="print-pop-up" class="opacity-0 flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl max-w-xl flex-col scale-0 transition duration-500 ease-in-out delay-150">
+    <div class="flex items-center mx-auto flex-col p-6">
+        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="80" height="80" viewBox="0 0 48 48">
+        <path fill="#c8e6c9" d="M36,42H12c-3.314,0-6-2.686-6-6V12c0-3.314,2.686-6,6-6h24c3.314,0,6,2.686,6,6v24C42,39.314,39.314,42,36,42z"></path><path fill="#4caf50" d="M34.585 14.586L21.014 28.172 15.413 22.584 12.587 25.416 21.019 33.828 37.415 17.414z"></path>
+        </svg>
+        <p class="text-xl font-bold">Done!</p>
+    </div>
+    <div class="flex flex-col justify-start px-6">
+        <p class="text-lg font-medium">Here's your printing request:</p>
+        <p>File name: {{printingResponse?.res_file_name}}</p>
+        <p>Copies: {{printingResponse?.res_copies}}</p>
+        <p>Size: {{printingResponse?.res_size}}</p>
+        <p>Printing mode: {{printingResponse?.res_mode}}</p>
+    </div>
+    <div class="py-4 pb-6 flex max-w-xl">
+        <button (click)="togglePopUp(false)" class="bg-blue-400 rounded-xl w-10/12 mx-auto text-lg text-white font-medium">OK!</button>
+    </div>
 </div>

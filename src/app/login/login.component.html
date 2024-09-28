@@ -3,7 +3,7 @@
     <p class="mx-auto text-xl mb-2 -mt-6">Student Smart Printing Service</p>
     <p [class.hidden] = "!isUnknown" class="mx-auto text-xl mb-2 text-red-700 font-medium">Unknown email or password!</p>
     <p [class.hidden] = "!alreadyAvailableUser" class="mx-auto text-xl mb-2 text-red-700 font-medium">Existing user!</p>
-    <p [class.hidden] = "!invalidSyntax" class="mx-auto text-xl mb-2 text-red-700 font-medium">Invalid email syntax!</p>
+    <p [class.hidden] = "!invalidSyntax" class="mx-auto text-xl mb-2 text-red-700 font-medium">Invalid email/password syntax!</p>
     <div class="flex mx-auto flex-col space-y-2">
         <input (keyup.enter) = "submit()" type="email" class="focus:outline-none focus:border-blue-800 focus:border-2 border-black border-[1px] rounded-lg w-[28rem] p-2" [(ngModel)]="userMail" placeholder="Example: example.name@hcmut.edu.vn ">
         <input (keyup.enter) = "submit()" type="password" class="focus:outline-none focus:border-blue-800 focus:border-2 border-[1px] border-black rounded-lg w-[28rem] p-2" [(ngModel)]="userPassword" placeholder="Enter your password: ">

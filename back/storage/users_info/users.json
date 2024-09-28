@@ -3,30 +3,8 @@
         "mail": "thang.mai0304@hcmut.edu.vn",
         "password": "phuongthao0412",
         "userID": "2252761",
-        "papers": 999899,
+        "papers": 999998,
         "role": "student",
-        "logs": [
-            {
-                "userID": "2252761",
-                "printerID": "0",
-                "file": "Capstone_Project_Autumn_2023.pdf",
-                "copies": 3,
-                "size": "A4"
-            },
-            {
-                "userID": "2252761",
-                "printerID": "0",
-                "file": "Capstone_Project_Autumn_2023.pdf",
-                "copies": 3,
-                "size": "A4"
-            },
-            {
-                "userID": "2252761",
-                "printerID": "0",
-                "file": "Capstone_Project_Autumn_2023.pdf",
-                "copies": 3,
-                "size": "A5"
-            }
-        ]
+        "logs": []
     }
 ]

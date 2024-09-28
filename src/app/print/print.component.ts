@@ -12,9 +12,9 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './print.component.css'
 })
 export class PrintComponent {
-  alreadySubmittedFileName = "";
-  filePages = 0;
-  accurateFilePages = 0;
+  alreadySubmittedFileName: string = "";
+  filePages: number = 0;
+  accurateFilePages: number = 0;
   selectedPrinter: Printer | undefined = undefined;
   selectedSize: PaperType | undefined = undefined;
   listOfPrinters: Printer[] = [];
@@ -25,11 +25,20 @@ export class PrintComponent {
   modeVisible: boolean = false;
   selectedMode: "one-sided" | "two-sided" | "" = "";
   selectedFile: FileList | undefined = undefined;
-  uploadForm: FormGroup | undefined = undefined;
   @Input() userID = "";
   @Input() copies = 1;
   @Input() userPapers = 0;
   @Output() userPapersChange = new EventEmitter;
+  printingResponse: {
+    res_copies: number,
+    res_file_name: string,
+    res_mode: string,
+    res_printer_id: string,
+    res_size: string,
+    res_userID: string,
+    res_papers: number,
+    status: number
+  } | undefined = undefined;
   serverURL: string = `http://localhost:4000`
   constructor(private http: HttpClient, private elRef: ElementRef, private renderer: Renderer2, private formBuilder: FormBuilder){
   }
@@ -147,11 +156,6 @@ export class PrintComponent {
     
     if (this.selectedMode === "") {
       this.selectedMode = mode;
-      if (mode === "two-sided") {
-        this.accurateFilePages /= 2
-        this.accurateFilePages = Math.ceil(this.accurateFilePages);
-      }
-      else this.accurateFilePages = this.filePages
       this.renderer.addClass(thisMode,'bg-blue-200');
       this.renderer.addClass(thisMode,'border-blue-500');
       this.renderer.removeClass(thisMode,'bg-white');
@@ -176,11 +180,6 @@ export class PrintComponent {
         this.renderer.addClass(this.elRef.nativeElement.querySelector('#'+this.selectedMode),'bg-white');
         this.renderer.addClass(this.elRef.nativeElement.querySelector('#'+this.selectedMode), 'border-slate-500')
         this.selectedMode = mode;
-        if (mode === "two-sided") {
-          this.accurateFilePages /= 2
-          this.accurateFilePages = Math.ceil(this.accurateFilePages);
-        }
-        else this.accurateFilePages = this.filePages
       }
     }
   }
@@ -203,15 +202,95 @@ export class PrintComponent {
       req_copies: this.copies,
       req_size: (this.selectedSize as PaperType).type,
       req_mode: this.selectedMode,
-      file_pages: this.accurateFilePages,
+      req_papers: this.getRequiredPapers(),
       file_name: this.alreadySubmittedFileName
     }
     this.http.post(this.serverURL + '/printing-request', req).subscribe((res: any) => {
       if (res.status === 200) {
+        this.printingResponse = res;
+        this.selectedFile = undefined;
         console.log(res);
         this.alreadySubmittedFileName = "";
-        this.userPapersChange.emit(this.userPapers -= Number(res.req_copies*this.accurateFilePages));
+        this.userPapersChange.emit(this.userPapers -= res.res_papers);        
+        this.togglePopUp(true);
+        this.renderer.setProperty(this.elRef.nativeElement.querySelector('#file-upload'), "value", null)
       }
     });
   }
+  togglePopUp(open: boolean){
+    let popUpBg = this.elRef.nativeElement.querySelector('#pop-up-bg')
+    let popUp = this.elRef.nativeElement.querySelector('#print-pop-up');
+    if(open){
+      this.renderer.removeClass(popUpBg, 'hidden');
+      this.renderer.removeClass(popUp, 'opacity-0');
+      this.renderer.addClass(popUp, 'opacity-100');
+      this.renderer.removeClass(popUp, 'scale-0');
+      setTimeout(() => {
+        this.renderer.addClass(popUp, 'scale-100')
+      })
+    }
+    else {
+      this.renderer.addClass(popUpBg, 'hidden');
+      this.renderer.removeClass(popUp, 'scale-100');
+      this.renderer.removeClass(popUp, 'opacity-100');
+      this.renderer.addClass(popUp, 'scale-0');
+      this.renderer.addClass(popUp, 'opacity-0');
+    }
+  }
+  getRequiredPapers(){
+    if (this.filePages === 0 || this.copies === 0 || this.selectedSize === undefined || this.selectedMode === "") return "N/A";
+    const A4Size = this.listOfPaperSize.find((type: PaperType) => {
+      return type.type === "A4";
+    })
+    let A4Area = 0;
+    if (A4Size !== undefined) A4Area = A4Size.width*A4Size.height;
+    let currentSizeArea = (this.selectedSize as PaperType).width * (this.selectedSize as PaperType).height;
+    let selectedSizePapers = 0;
+    if (A4Area > currentSizeArea) {
+      selectedSizePapers = this.DecimalPrecision2.trunc(this.DecimalPrecision2.round(A4Area / currentSizeArea, 1), 0);
+      selectedSizePapers = 1/selectedSizePapers;
+    }
+    else selectedSizePapers = this.DecimalPrecision2.trunc(this.DecimalPrecision2.round(currentSizeArea / A4Area, 1), 0);
+    if (this.selectedMode === 'two-sided')
+      this.accurateFilePages = this.DecimalPrecision2.ceil(this.filePages/2, 0);
+    else {
+      this.accurateFilePages = this.filePages;
+    }
+    return this.DecimalPrecision2.floor(selectedSizePapers*this.copies*this.accurateFilePages, 0);
+  }
+  DecimalPrecision2 = (function() {
+    if (Math.sign === undefined) {
+        Math.sign = function(x: number) {
+            return (Number(x > 0) - Number(x < 0)) || +x;
+        };
+    }
+    return {
+        // Decimal round (half away from zero)
+        round: function(num: number, decimalPlaces: number) {
+            var p = Math.pow(10, decimalPlaces || 0);
+            var n = (num * p) * (1 + Number.EPSILON);
+            return Math.round(n) / p;
+        },
+        // Decimal ceil
+        ceil: function(num: number, decimalPlaces: number) {
+            var p = Math.pow(10, decimalPlaces || 0);
+            var n = (num * p) * (1 - Math.sign(num) * Number.EPSILON);
+            return Math.ceil(n) / p;
+        },
+        // Decimal floor
+        floor: function(num: number, decimalPlaces: number) {
+            var p = Math.pow(10, decimalPlaces || 0);
+            var n = (num * p) * (1 + Math.sign(num) * Number.EPSILON);
+            return Math.floor(n) / p;
+        },
+        // Decimal trunc
+        trunc: function(num: number, decimalPlaces: number) {
+            return (num < 0 ? this.ceil : this.floor)(num, decimalPlaces);
+        },
+        // Format using fixed-point notation
+        toFixed: function(num: number, decimalPlaces: number) {
+            return this.round(num, decimalPlaces).toFixed(decimalPlaces);
+        }
+    };
+})();
 }

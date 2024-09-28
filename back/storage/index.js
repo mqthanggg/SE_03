@@ -42,20 +42,22 @@ app.post('/printing-request', (req, res) => {
     });
     if (currentUserSession === undefined) throw new Error("Undefined user!");
     
-    currentUserSession.papers -= Number(req.body.req_copies * req.body.file_pages);
+    currentUserSession.papers -= Number(req.body.req_papers);
     fs.writeFileSync(path.join(__dirname, '/users_info/users.json'), JSON.stringify(users_info, null, 4));
 
     let logs_json = fs.readFileSync(path.join(__dirname, '/logs_info/logs.json'));
     let logs = JSON.parse(logs_json);
-    logs.push({
+    let newLog = {
         userID: currentUserSession.userID,
         printerID: req.body.printer_id,
         printing_start: (new Date()).toLocaleString(),
         printing_end: (new Date(Date.now() + 10000)).toLocaleString(),
         copies: req.body.req_copies,
         size: req.body.req_size,
+        papers_used: req.body.req_papers,
         file_name: req.body.file_name
-    })
+    };
+    logs.push(newLog)
 
     fs.writeFileSync(path.join(__dirname, '/logs_info/logs.json'), JSON.stringify(logs, null, 4));
 
@@ -65,17 +67,7 @@ app.post('/printing-request', (req, res) => {
     
     printers_info.forEach((printer) => {
         if (printer.id === req.body.printer_id){
-            printer.logs.push(
-                {
-                    userID: currentUserSession.userID,
-                    printerID: req.body.printer_id,
-                    file: req.body.file_name,
-                    printing_start: (new Date()).toLocaleString(),
-                    printing_end: (new Date(Date.now() + 10000)).toLocaleString(),
-                    copies: req.body.req_copies,
-                    size: req.body.req_size
-                }
-            )
+            printer.logs.push(newLog)
         }
     })
 
@@ -86,6 +78,7 @@ app.post('/printing-request', (req, res) => {
                 printerID: req.body.printer_id,
                 file: req.body.file_name,
                 copies: req.body.req_copies,
+                papers_used: req.body.req_papers,
                 size: req.body.req_size
             })
         }
@@ -100,22 +93,24 @@ app.post('/printing-request', (req, res) => {
     fs_extra.move(path.join(__dirname, `temp_file/${req.body.file_name}`), path.join(__dirname, `printers_info/${req.body.printer_id}/${req.body.file_name}`));
 
     console.log(`Printing response: ${JSON.stringify({
-        req_userID: currentUserSession.userID,
-        req_file_name: req.body.file_name,
-        req_printer_id: req.body.printer_id,
-        req_copies: req.body.req_copies,
-        req_size: req.body.req_size,
-        req_mode: req.body.req_mode,
+        res_userID: currentUserSession.userID,
+        res_file_name: req.body.file_name,
+        res_printer_id: req.body.printer_id,
+        res_copies: req.body.req_copies,
+        res_papers: req.body.req_papers,
+        res_size: req.body.req_size,
+        res_mode: req.body.req_mode,
         status: 200
     }, null, 4)}`);
 
     res.send({
-        req_userID: currentUserSession.userID,
-        req_file_name: req.body.file_name,
-        req_printer_id: req.body.printer_id,
-        req_copies: req.body.req_copies,
-        req_size: req.body.req_size,
-        req_mode: req.body.req_mode,
+        res_userID: currentUserSession.userID,
+        res_file_name: req.body.file_name,
+        res_printer_id: req.body.printer_id,
+        res_copies: req.body.req_copies,
+        res_papers: req.body.req_papers,
+        res_size: req.body.req_size,
+        res_mode: req.body.req_mode,
         status: 200
     })
 })
@@ -188,11 +183,13 @@ let avatar_files_req = multer({storage: avatar_storage})
 app.post('/sign-up', avatar_files_req.single('avatar_file'),(req, res) => {
     let users_json = fs.readFileSync(path.join(__dirname, '/users_info/users.json'));
     let listOfUsers = JSON.parse(users_json);
+    let default_json = fs.readFileSync(path.join(__dirname, '/specs_info/default_pages.json'));
+    let default_papers = JSON.parse(default_json).default;
     listOfUsers.push({
         mail: req.body.mail,
         password: req.body.password,
         userID: req.body.userID,
-        papers: 0,
+        papers: default_papers,
         role: "student",
         logs: []
     })
