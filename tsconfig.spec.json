@@ -10,6 +10,8 @@
   },
   "include": [
     "src/**/*.spec.ts",
+    "src/app/login/student/**/*.spec.ts",
+    "src/app/login/officer/**/*.spec.ts",
     "src/**/*.d.ts"
   ]
 }

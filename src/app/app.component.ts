@@ -1,54 +1,55 @@
-import { Component, Input } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { PrintComponent } from './print/print.component';
-import { HomeComponent } from './home/home.component';
-import { BuyComponent } from './buy/buy.component';
-import { AboutUsComponent } from './about-us/about-us.component';
-import { LoginComponent } from './login/login.component';
+import { Component, Output, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { StudentComponent } from './student/student.component';
+import { LoginComponent } from './login/login.component';
+import { Router, RouterOutlet } from '@angular/router';
+import { Location } from '@angular/common';
+import { OfficerComponent } from './officer/officer.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, PrintComponent, HomeComponent, BuyComponent, AboutUsComponent, LoginComponent, RouterLink],
+  imports: [StudentComponent, LoginComponent, RouterOutlet, OfficerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   userID = "";
-  userPapers = 0;
   userName = "";
-  isServerAvailable: boolean = false;
+  userPapers = 0;
   isLoggedIn: boolean = false;
-  visibleDropDown: boolean = false;
-  currentTag = "login";
-  avatarSrc = ""
-  constructor(private http: HttpClient){
+  userRole = "";
+
+  isServerAvailable = false;
+
+  constructor(private http: HttpClient, private router: Router, private location: Location) {  
     this.checkServerAvailable()
     setInterval(() => {
       this.checkServerAvailable()
     }, 5000);
-  }
-  userPapersChange(papers: number){
-    this.userPapers = papers;
-  }
-  changeCurrentTag(tag: "home" | "print" | "buy" | "about-us" | "login"){
-    this.currentTag = tag;
-  }
-  userNameChange(name: string){
-    this.userName = name;
-  }
-  changeLoggedInStage(stage: boolean){
-    this.isLoggedIn = stage;
-    if (stage) {
-      this.getAvatarSrc();
-      this.currentTag = "home"
+    const currentState = this.router.getCurrentNavigation();
+    
+    if (currentState === null) {
+      this.router.navigateByUrl('login');
+      return;
     }
-    else this.currentTag = "login";
+    this.isLoggedIn = currentState.extras.state?.['isLoggedIn'];
+    
+    if (!this.isLoggedIn) {
+      this.userRole = this.userName = this.userID = "";
+      this.userPapers = 0;
+      this.router.navigateByUrl('login')
+      return;
+    }
+    this.userRole = currentState.extras.state?.['userRole'];
+    this.userName = currentState.extras.state?.['userName'];
+    if (this.userRole === "student"){
+      this.userID = currentState.extras.state?.['userID'];
+      this.userPapers = currentState.extras.state?.['userPapers'];
+    }
+    
   }
-  toggleDropDown(){
-    this.visibleDropDown = !this.visibleDropDown;
-  }
+
   checkServerAvailable(){
     this.http.get('http://localhost:4000').subscribe({
       next: (res: any) => {
@@ -57,18 +58,23 @@ export class AppComponent {
       error: (err: any) => {
         if (err.status === 0) {
           this.isServerAvailable = false;
-          this.isLoggedIn = false;
-          this.currentTag = 'login'
         }
       }
     })
   }
-  changeUserID(ID: string){
-    this.userID = ID;
+  changeUserID(id: string) {
+    this.userID = id;
   }
-  getAvatarSrc(){
-    this.http.get(`http://localhost:4000/user-avatar/${this.userID}`).subscribe((res: any) => {
-      this.avatarSrc = res.avatar_src;
-    })
+  changeUserName(name: string){
+    this.userName = name;
+  }
+  changeLoggedInState(state: boolean){
+    this.isLoggedIn = state;
+  }
+  changeUserPapers(papers: number){
+    this.userPapers = papers;
+  }
+  changeUserRole(role: string){
+    this.userRole = role;
   }
 }

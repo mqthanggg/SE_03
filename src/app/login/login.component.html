@@ -13,10 +13,10 @@
             <input type="file" name="user-avatar" (change)="obtainAvatarUpload($event)">
         }
     </div>
-    <div class="flex mx-auto mt-4 space-x-3">
-        <button (click)="submitLogin()" [class.hidden]="isSigningUp" class="duration-0 border-[1px] hover:border-2 border-black rounded-md p-2 bg-slate-200 hover:bg-slate-300 hover:duration-75 hover:font-medium">Login</button>
-        <button (click)="clickSignUp()" [class.hidden]="isSigningUp" class="duration-0 border-[1px] hover:border-2 border-black rounded-md p-2 bg-slate-200 hover:bg-slate-300 hover:duration-75 hover:font-medium">Sign up?</button>
-        <button (click)="isSigningUp = false" [class.hidden]="!isSigningUp" class="duration-0 border-[1px] hover:border-2 border-black rounded-md p-2 bg-slate-200 hover:bg-slate-300 hover:duration-75 hover:font-medium">Login?</button>
-        <button (click)="submitSignUp()" [class.hidden]="!isSigningUp" class="duration-0 border-[1px] hover:border-2 border-black rounded-md p-2 bg-slate-200 hover:bg-slate-300 hover:duration-75 hover:font-medium">Sign up now!</button>
+    <div class="flex mx-auto mt-4 space-x-3 *:duration-0 *:border-[1px] *:hover:border-2 *:border-black *:rounded-md *:p-2 *:bg-slate-200 *:hover:bg-slate-300 *:hover:duration-75 *:hover:font-medium">
+        <button (click)="submitLogin()" [class.hidden]="isSigningUp">Login</button>
+        <button (click)="clickSignUp()" [class.hidden]="isSigningUp">Sign up?</button>
+        <button (click)="isSigningUp = false" [class.hidden]="!isSigningUp">Login?</button>
+        <button (click)="submitSignUp()" [class.hidden]="!isSigningUp">Sign up now!</button>
     </div>
 </div>

@@ -1,52 +1,24 @@
-  <div class="relative z-40"id="header">
-    <div class=" h-fit flex items-center bg-gradient-to-r from-blue-800 to-blue-600  text-white font-medium">
-      <div class="space-x-2 max-w-fit flex items-center ">
-        <img class="size-[5%]" src="bkicon.png" alt="BK icon">
-        <div>
-          <p class="text-xs font-bold font-[Arial]">Ho Chi Minh city University of Technology</p>
-          <p class="text-sm">Student Smart Printing Service</p>
-        </div>
-      </div>
-      <div id="tags" class="flex flex-row justify-end items-center">
-        <div (click)="changeCurrentTag('home')" class="m-4 text-sm whitespace-nowrap hover:cursor-pointer" id="home">Home</div>
-        @if (isLoggedIn) {
-          <div (click)="changeCurrentTag('print')" class="m-4 text-sm whitespace-nowrap hover:cursor-pointer" id="print">Print</div>
-          <div (click)="changeCurrentTag('buy')" class="m-4 text-sm whitespace-nowrap hover:cursor-pointer" id="buy">Buy</div>
+<!-- @if(isServerAvailable){
+    @if(isLoggedIn){
+        @if(userRole === "student"){
+            <app-student
+                [userID]="userID"
+                [userName]="userName"
+                [userPapers]="userPapers"
+            ></app-student>
         }
-        @else {
-          <div (click)="changeCurrentTag('login')" class="m-4 text-sm whitespace-nowrap hover:cursor-pointer" id="login">Log in</div>          
+        @else if (userRole === "officer") {
+            <app-officer></app-officer>
         }
-        <div  (click)="changeCurrentTag('about-us')" class="m-4 text-sm whitespace-nowrap hover:cursor-pointer" id="about-us">About Us</div>
-        @if (isLoggedIn) {
-          <div class="space-x-2 flex items-center mr-1" id="user">
-            <img (click)="toggleDropDown()" class="size-5 max-h-none max-w-none hover:cursor-pointer" src="drop_down.png" alt="Drop down arrow">
-            <div id="user-drop-down" [class.hidden] = " !visibleDropDown" class="flex flex-col absolute max-w-fit top-full left-auto right-2">
-              <div class="duration-0 hover:duration-100 hover:bg-slate-200 bg-white flex p-3 items-center space-x-2 rounded-t-xl">
-                <img class="size-10 max-h-none max-w-none" [src]="avatarSrc" alt="Avatar">
-                <div>
-                  <p class="text-black">{{userName}}</p>
-                  <p class="text-black">{{userID}}</p>
-                </div>
-              </div>
-              <div class="text-black font-normal duration-0 hover:duration-100 hover:bg-slate-200 bg-white flex p-3 items-center">Papers: {{userPapers}}</div>
-              <div (click)="changeLoggedInStage(false)" (click)="toggleDropDown()" class="text-black duration-0 hover:duration-100 hover:bg-slate-200 hover:underline hover:cursor-pointer bg-white flex p-3 items-center rounded-b-xl">Sign out</div>
-            </div>
-          </div>
-        }
-      </div>
+    }
+    @else {
+        <router-outlet></router-outlet>
+    }
+}
+@else {
+    <div class="flex w-fit m-auto">
+        <h1 class="text-3xl">Waiting for the server to respond...</h1>
     </div>
-    
-  </div>
-  
- @if (isServerAvailable) {
-  <app-home [class.hidden] = "currentTag !== 'home'" ></app-home>
-  <app-print [userID]="userID" [(userPapers)]="userPapers" [class.hidden] = "currentTag !== 'print'" ></app-print>
-  <app-buy [class.hidden] = "currentTag !== 'buy'" ></app-buy>
-  <app-about-us [class.hidden] = "currentTag !== 'about-us'"></app-about-us>
-  <app-login (userIDEvent)="changeUserID($event)" (userNameEvent)="userNameChange($event)" (userPapersEvent)="userPapersChange($event)" (isLoggedInEvent)="changeLoggedInStage($event)" [class.hidden] = "currentTag !== 'login' || isLoggedIn === true"></app-login>
- }
- @else{
-  <div class="flex w-fit m-auto">
-    <h1 class="text-3xl">Waiting for the server to respond...</h1>
-  </div>
- }
+} -->
+
+<app-officer></app-officer>

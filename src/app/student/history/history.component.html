@@ -1,0 +1,39 @@
+<div class="flex rounded-xl flex-col shadow-lg bg-white max-w-7xl mx-auto relative pt-1 pl-2 pb-6 pr-6 z-0">
+    <div class="m-3">
+        <p class="text-2xl">Printing history</p>
+        <div class="m-3">
+            <span class="text-lg">Choose a time :</span>
+            <input type="number" [(ngModel)]="date" class="p-1 pl-2 mx-2 rounded-md border-2 border-blue-300 hover:border-blue-500 w-12 disabled:border-black disabled:bg-slate-100" [disabled]="isShowAllChecked"> /
+            <input type="number" [(ngModel)]="month" class="p-1 pl-2 mx-2 rounded-md border-2 border-blue-300 hover:border-blue-500 w-12 disabled:border-black disabled:bg-slate-100" [disabled]="isShowAllChecked"> /
+            <input type="number" [(ngModel)]="year" class="p-1 pl-2 mx-2 rounded-md border-2 border-blue-300 hover:border-blue-500 w-20 disabled:border-black disabled:bg-slate-100" [disabled]="isShowAllChecked">
+            <div class="flex items-center">
+                <p class="text-lg mr-2">Show all?</p> <input type="checkbox" name="show-all" class="size-5" [(ngModel)]="isShowAllChecked">
+            </div>
+        </div>
+        <div class="overflow-y-auto max-h-[500px] mt-3">
+            <table class="table-fixed overflow-y-auto" id="table">
+                <tr class="bg-slate-600 text-xl text-white border-b-[1px] border-slate-200 sticky top-0">
+                    <th class="px-4 py-2 duration-0 hover:duration-100 hover:bg-slate-500">Date</th>
+                    <th class="px-4 py-2 duration-0 hover:duration-100 hover:bg-slate-500">Printer ID</th>
+                    <th class="px-4 py-2 duration-0 hover:duration-100 hover:bg-slate-500 w-[50rem]">File name</th>
+                    <th class="px-4 py-2 duration-0 hover:duration-100 hover:bg-slate-500">Copies</th>
+                    <th class="px-4 py-2 duration-0 hover:duration-100 hover:bg-slate-500">Paper size</th>
+                </tr>
+                <tbody class="bg-slate-300 border-t-2 text-lg text-gray-700">
+                    @for (log of userLogs; track $index) {
+                        @if(filterLog(log.printing_date)){
+                            <tr>
+                                <td class="px-4 py-2 duration-0 hover:duration-100 hover:bg-slate-200">{{log.printing_date}}</td>
+                                <td class="px-4 py-2 duration-0 hover:duration-100 hover:bg-slate-200">{{log.printerID}}</td>
+                                <td class="px-4 py-2 duration-0 hover:duration-100 hover:bg-slate-200 max-w-[50rem] break-all">{{log.file}}</td>
+                                <td class="px-4 py-2 duration-0 hover:duration-100 hover:bg-slate-200">{{log.copies}}</td>
+                                <td class="px-4 py-2 duration-0 hover:duration-100 hover:bg-slate-200">{{log.size}}</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>

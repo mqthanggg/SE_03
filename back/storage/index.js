@@ -47,11 +47,11 @@ app.post('/printing-request', (req, res) => {
 
     let logs_json = fs.readFileSync(path.join(__dirname, '/logs_info/logs.json'));
     let logs = JSON.parse(logs_json);
+    const date = (new Date()).toDateString();
     let newLog = {
         userID: currentUserSession.userID,
         printerID: req.body.printer_id,
-        printing_start: (new Date()).toLocaleString(),
-        printing_end: (new Date(Date.now() + 10000)).toLocaleString(),
+        printing_date: date,
         copies: req.body.req_copies,
         size: req.body.req_size,
         papers_used: req.body.req_papers,
@@ -77,6 +77,7 @@ app.post('/printing-request', (req, res) => {
                 userID: currentUserSession.userID,
                 printerID: req.body.printer_id,
                 file: req.body.file_name,
+                printing_date: date,
                 copies: req.body.req_copies,
                 papers_used: req.body.req_papers,
                 size: req.body.req_size
@@ -123,13 +124,34 @@ app.post('/login-request', (req, res) => {
         return user.mail === req.body.mail && user.password === req.body.password;
     });
     if (currentUserSession !== undefined) {
-        console.log(`Login response: ${JSON.stringify(
+        console.log(`Login response: ${
+            currentUserSession.role === "student" ? 
+            JSON.stringify(
+                {
+                    isLoggedIn: true, 
+                    papers: currentUserSession.papers,
+                }, null, 4) : 
+            JSON.stringify(
+                {
+                    isLoggedIn: true,
+                    role: "officer"
+                })
+        }`);
+    
+        
+        return res.send(
+            currentUserSession.role === "student" ? 
             {
                 isLoggedIn: true, 
-                papers: currentUserSession.papers,
-            }, null, 4)}`);
-        
-        return res.send({isLoggedIn: true, papers: currentUserSession.papers, userID: currentUserSession.userID});
+                role: "student",
+                papers: currentUserSession.papers, 
+                userID: currentUserSession.userID
+            } :
+            {
+                isLoggedIn: true,
+                role: "officer"
+            }
+        );
     }
     else res.send({isLoggedIn: false});
 })
@@ -248,4 +270,15 @@ app.post('/file-submit',temp_files.single('file'), async (req, res) => {
     res.send({
         file_pages: data
     })    
+})
+
+app.get('/user-log/:id', (req, res) => {
+    let users = JSON.parse(fs.readFileSync(path.join(__dirname, '/users_info/users.json')));
+    let userLogs = users.find((user) => {
+        return user.userID === req.params.id;
+    }).logs;
+    res.send({
+        status: 200,
+        logs: userLogs
+    })
 })

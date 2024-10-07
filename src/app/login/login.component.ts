@@ -1,39 +1,37 @@
 import { Component, Output, Input, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthComponent } from '../auth/auth.component';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../auth/type';
-
+import { StudentComponent } from '../student/student.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, StudentComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
+
 export class LoginComponent {
   @Input() userMail = "";
   @Input() userPassword = ""
   @Input() userID = "";
-  @Output() userNameEvent = new EventEmitter;
-  @Output() userPapersEvent = new EventEmitter;
-  @Output() isLoggedInEvent = new EventEmitter;
-  @Output() userIDEvent = new EventEmitter;
+  @Output() userIDEvent = new EventEmitter<string>();
+  @Output() userNameEvent = new EventEmitter<string>();
+  @Output() isLoggedInEvent = new EventEmitter<boolean>();
+  @Output() userPapersEvent = new EventEmitter<number>();
+  @Output() userRoleEvent = new EventEmitter<string>();
 
   selectedAvatar: File | undefined = undefined
   isSigningUp: boolean = false;
   alreadyAvailableUser: boolean = false;
   invalidSyntax: boolean = false;
+  isServerAvailable = false;
 
-  isLoggedInChange(stage: boolean){
-    this.isLoggedInEvent.emit(stage);
-  }
-
-  listOfUsers: User[] = [];
-  currentUser: User | undefined = undefined;
   isUnknown: boolean = false;
-  constructor(private http: HttpClient) {  }
+  constructor(private http: HttpClient, private router: Router) {  
+
+  }
   obtainAvatarUpload(event: Event){
     if (event.target as HTMLInputElement !== null){
       if ((event.target as HTMLInputElement).files !== null){
@@ -47,10 +45,26 @@ export class LoginComponent {
       console.log(res);
       
       if (res.isLoggedIn) {
-        this.userPapersEvent.emit(res.papers);
-        this.userNameEvent.emit(this.userMail.split(`@`)[0]);
-        this.userIDEvent.emit(res.userID);
-        this.isLoggedInEvent.emit(true);
+        if (res.role === "student"){
+          this.router.navigateByUrl('app', {
+            state:{
+              userPapers: res.papers,
+              userID: res.userID,
+              userName: this.userMail.split('@')[0],
+              isLoggedIn: true,
+              userRole: res.role
+            }
+          });
+        }
+        else{
+          this.router.navigateByUrl('app',{
+            state:{
+              userName: this.userMail.split('@')[0],
+              userRole: res.role,
+              isLoggedIn: true
+            }
+          })
+        }
       }
       else {
         this.isUnknown = true;
@@ -68,7 +82,6 @@ export class LoginComponent {
     this.isSigningUp = true;
     this.userMail = "";
     this.userPassword = "";
-    
     
   }
 
@@ -107,4 +120,5 @@ export class LoginComponent {
     if (this.isSigningUp) return this.submitSignUp()
     else return this.submitLogin();
   }
+  
 }
