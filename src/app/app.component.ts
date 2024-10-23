@@ -1,4 +1,4 @@
-import { Component, Output, Input } from '@angular/core';
+import { Component} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { StudentComponent } from './student/student.component';
 import { LoginComponent } from './login/login.component';

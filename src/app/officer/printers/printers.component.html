@@ -1,0 +1,287 @@
+<main class="m-10">
+    <div class="text-3xl font-bold">Printers configuration</div>
+    <div class="border-2 border-slate-200 rounded-md my-5 shadow-lg overflow-x-auto max-w-7xl">
+        <p class="font-medium text-xl m-5">Printers information:</p>
+        <div class="max-h-[544px] overflow-y-auto overflow-x-auto w-fit">
+            <table class="table-fixed border-separate border-spacing-0">
+                <thead class="">
+                    <tr class="*:sticky *:p-5 *:top-0 *:bg-white *:border-y-2 *:border-slate-200">
+                        <th class="w-20">ID</th>
+                        <th class="w-40">Manufacturer</th>
+                        <th class="w-40">Model</th>
+                        <th class="w-96">Description</th>
+                        <th class="w-40">Location</th>
+                        <th class="w-32">Status</th>
+                        <th class="w-32"></th>
+                        <th class="w-20"></th>
+                        <th class="w-20"></th>
+                    </tr>
+                </thead>
+                <tbody class="*:border-y-2 *:border-slate-200 *:last:border-b-0">
+                    @for (printer of listOfPrinters; track printer.id; let idx = $index) {
+                        <tr class="*:p-5">
+                            <td class="text-center">{{printer.id}}</td>
+                            <td >{{printer.manufacturer}}</td>
+                            <td >{{printer.model}}</td>
+                            <td >{{printer.desc}}</td>
+                            <td class="text-center">{{printer.location.campus + " - " + printer.location.building + " - " + printer.location.room}}</td>
+                            <td class="font-semibold text-center" [class.text-red-500]="printer.status === 'disabled'" [class.text-green-500]="printer.status === 'enabled'">{{printer.status}}</td> 
+                            <td class="space-x-5 text-center">
+                                @if(printer.status === "disabled"){
+                                    <button (click)="toggleEnabled(idx)" class="font-medium duration-300 py-2 px-3 rounded-xl bg-green-500 text-white hover:cursor-pointer hover:bg-green-400">Enable</button>
+                                }
+                                @else {
+                                    <button (click)="toggleDisabled(idx)" class="font-medium duration-300 py-2 px-3 rounded-xl bg-red-500 text-white hover:cursor-pointer hover:bg-red-400">Disable</button>
+                                }
+                            </td>
+                            <td class="*:size-5 hover:*:cursor-pointer text-center">
+                                <svg (click)="editPrinter(idx)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/></svg>
+                            </td>
+                            <td class="*:size-5 hover:*:cursor-pointer text-center">
+                                <svg (click)="openDeletePrinter(idx)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+                            </td>
+                        </tr>
+                    }
+                    
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+    <div class="flex flex-col max-w-4xl border-2 rounded-md my-5 shadow-lg overflow-x-auto">
+        <p class="text-xl font-medium m-5">Add new printer</p>
+            <form (submit)="saveNewPrinter()" #newPrinterForm="ngForm" class="border-t-2 flex flex-wrap p-5 ">
+                <fieldset ngModelGroup="newPrinter" class="[&>label>input]:border-2 [&>label>input]:p-1 [&>label>input]:m-3 invalid:[&>label>input]:border-red-500 invalid:[&>label>input]:outline-none [&>label>input]:rounded-md *:flex *:items-center flex flex-wrap">
+                        <label for="newPrinterID" class="w-full">
+                            ID: 
+                            <input 
+                                class=" max-w-20" 
+                                [ngClass]="{
+                                    'border-red-500 outline-none': newPrinterID.hasError('existedID'),
+                                }"
+                                name="newPrinterID" 
+                                type="number" 
+                                required 
+                                [(ngModel)]="newPrinterID" 
+                                    minlength="1"  
+                                    min="0"
+                                    appIDExistsValidator
+                                    #newPrinterID = "ngModel"
+                                    [info]="{idx: -1, listOfPrinters: listOfPrinters}"
+                                    >
+                            @if (PrinterID.hasError('existedID')) {
+                                <p class="font-red-500">Existed ID!</p>
+                            }
+                        </label>
+                        <label for="newPrinterManufacturer">
+                            Manufacturer: 
+                            <input 
+                                class="" 
+                                name="newPrinterManufacturer" 
+                                type="text" 
+                                required 
+                                    minlength="1" 
+                                    [(ngModel)]="newPrinterManufacturer"
+                            >
+                        </label>
+                        <label for="newPrinterModel">
+                            Model:
+                            <input 
+                                class="" 
+                                name="newPrinterModel" 
+                                type="text" 
+                                required 
+                                    minlength="1" 
+                                    [(ngModel)]="newPrinterModel"
+                            >
+                        </label>
+                        <label for="newPrinterLocationCampus">
+                            Campus: 
+                            <input 
+                                class=" max-w-24" 
+                                name="newPrinterLocationCampus" 
+                                type="text" 
+                                required 
+                                    minlength="1" 
+                                    [(ngModel)]="newPrinterLocationCampus"
+                            >
+                        </label>
+                        <label for="newPrinterLocationBuilding">
+                            Building: 
+                            <input 
+                                class=" max-w-10" 
+                                name="newPrinterLocationBuilding" 
+                                type="text" 
+                                required 
+                                    minlength="1" 
+                                    [(ngModel)]="newPrinterLocationBuilding" 
+                            >
+                        </label>
+                        <label for="newPrinterLocationRoom">
+                            Room:
+                            <input 
+                                class=" max-w-14" 
+                                name="newPrinterLocationRoom" 
+                                type="number"            
+                                [(ngModel)]="newPrinterLocationRoom"
+                                required 
+                                    min="100" 
+                            >
+                        </label>
+                        <label for="newPrinterStatus">
+                            Enable:
+                            <select class="border-2 p-1 m-3 rounded-md" name="newPrinterStatus" [(ngModel)]="newPrinterStatus">
+                                <option [value]="true" [selected]="true">Yes</option>
+                                <option [value]="false">No</option>
+                            </select>
+                        </label>
+                        <label for="newPrinterDesc">
+                            Description:
+                            <textarea 
+                                class="border-2 p-1 m-3 rounded-md" 
+                                name="newPrinterDesc" 
+                                cols="90" 
+                                rows="5" 
+                                [(ngModel)]="newPrinterDesc" 
+                            >
+                            </textarea>
+                        </label>
+                    </fieldset>
+                    <button type="submit" [ngClass]="{
+                        'hover:bg-blue-500': newPrinterForm.valid,
+                        'hover:cursor-default pointer-events-none': !newPrinterForm.valid}" class="font-medium duration-300 mx-auto py-2 px-3 bg-blue-600 rounded-xl text-white">Add!</button>
+            </form>
+    </div>
+</main>
+
+<div id="edit-printer" class="hidden duration-300 fixed top-0 left-0 opacity-0 bg-slate-400 h-dvh w-dvw z-50">
+    <div class="rounded-xl fixed top-1/2 left-1/2 transition-all transform -translate-x-1/2 -translate-y-1/2 max-w-4xl bg-white  p-5 ">
+        <div class="flex justify-between pb-3 mb-3 border-b-2 border-slate-200">
+            <p class="text-xl font-semibold">Edit printer information</p>
+            <svg (click)="closeEditPrinter()" class="duration-300 hover:size-7 size-6 hover:cursor-pointer stroke-red-500 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+        </div>
+        <form (submit)="saveEditPrinter()" #editingPrinterForm="ngForm">
+            <fieldset ngModelGroup="editingPrinter" class="[&>label>input]:border-2 [&>label>input]:p-1 [&>label>input]:m-3 invalid:[&>label>input]:border-red-500 invalid:[&>label>input]:outline-none [&>label>input]:rounded-md *:flex *:items-center flex flex-wrap">
+                    <label for="PrinterID" class="w-full">
+                        ID: 
+                        <input 
+                            class=" max-w-20" 
+                            [ngClass]="{
+                                'border-red-500 outline-none': PrinterID.hasError('existedID'),
+                            }"
+                            name="PrinterID" 
+                            type="number" 
+                            (ngModelChange)="madeChanges=true" 
+                            [(ngModel)]="editingPrinterID" 
+                            required 
+                                minlength="1"  
+                                min="0"
+                                appIDExistsValidator
+                                #PrinterID = "ngModel"
+                                [info]="{idx: currentEditingPrinterIdx, listOfPrinters: listOfPrinters}"
+                                >
+                        @if (PrinterID.hasError('existedID')) {
+                            <p class="font-red-500">Existed ID!</p>
+                        }
+                    </label>
+                    <label for="PrinterManufacturer">
+                        Manufacturer: 
+                        <input 
+                            class="" 
+                            name="PrinterManufacturer" 
+                            type="text" 
+                            required 
+                                minlength="1" 
+                                (ngModelChange)="madeChanges=true" 
+                                [(ngModel)]="editingPrinterManufacturer"
+                        >
+                    </label>
+                    <label for="PrinterModel">
+                        Model:
+                        <input 
+                            class="" 
+                            name="PrinterModel" 
+                            type="text" 
+                            required 
+                                minlength="1" 
+                                (ngModelChange)="madeChanges=true" 
+                                [(ngModel)]="editingPrinterModel"
+                        >
+                    </label>
+                    <label for="PrinterLocationCampus">
+                        Campus: 
+                        <input 
+                            class=" max-w-24" 
+                            name="PrinterLocationCampus" 
+                            type="text" 
+                            required 
+                                minlength="1" 
+                                (ngModelChange)="madeChanges=true" 
+                                [(ngModel)]="editingPrinterLocationCampus"
+                        >
+                    </label>
+                    <label for="PrinterLocationBuilding">
+                        Building: 
+                        <input 
+                            class=" max-w-10" 
+                            name="PrinterLocationBuilding" 
+                            type="text" 
+                            required 
+                                minlength="1" 
+                                (ngModelChange)="madeChanges=true" 
+                                [(ngModel)]="editingPrinterLocationBuilding" 
+                        >
+                    </label>
+                    <label for="PrinterLocationRoom">
+                        Room:
+                        <input 
+                            class=" max-w-14" 
+                            name="PrinterLocationRoom" 
+                            type="number" 
+                            (ngModelChange)="madeChanges=true" 
+                            [(ngModel)]="editingPrinterLocationRoom"
+                            required 
+                                min="100" 
+                        >
+                    </label>
+                    <label for="PrinterDesc">
+                        Description:
+                        <textarea 
+                            class="border-2 p-1 m-3 rounded-md" 
+                            name="PrinterDesc" 
+                            cols="90" 
+                            rows="5" 
+                            (ngModelChange)="madeChanges = true" 
+                            [(ngModel)]="editingPrinterDesc" 
+                        >
+                        </textarea>
+                    </label>
+                </fieldset>
+                <div class="w-full flex justify-center">
+                    <button type="submit" [ngClass]="{
+                        'hover:bg-blue-500': editingPrinterForm.valid,
+                        'hover:cursor-default pointer-events-none': !editingPrinterForm.valid}" class="font-medium duration-300 mx-auto py-2 px-3 bg-blue-600 rounded-xl text-white">Save!</button>
+                </div>
+        </form>
+    </div>
+</div>
+
+<div id="remove-printer" class="hidden duration-300 fixed top-0 left-0 opacity-0 bg-slate-400 h-dvh w-dvw z-50">
+    <div class="*:mx-auto flex flex-col pb-7 rounded-xl fixed top-1/2 left-1/2 transition-all transform -translate-x-1/2 -translate-y-1/2 max-w-4xl bg-white p-5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-red-500 size-20">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+            <path d="M12 8v4" />
+            <path d="M12 16h.01" />
+          </svg>
+        <p class="text-2xl font-bold">Warning!</p>
+        <p class="text-xl font-semibold">You are trying to remove the following printer</p>
+        <p class="text-lg font-medium whitespace-pre my-3" id="removing-printer-info"></p>
+        <div class="space-x-4 *:font-medium *:rounded-xl *:py-2 *:px-3 *:text-white hover:*:cursor-pointer *:duration-300">
+            <button (click)="removePrinter(currentRemovingPrinterIdx)" class="bg-green-500 hover:bg-green-400">Confirm!</button>
+            <button (click)="closeDeletePrinter()" class="bg-red-500 hover:bg-red-400">Cancel</button>
+        </div>
+    </div>
+</div>

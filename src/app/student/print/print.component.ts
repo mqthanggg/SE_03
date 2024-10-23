@@ -1,4 +1,4 @@
-import { Component, ElementRef, Renderer2, Input, EventEmitter, Output  } from '@angular/core';
+import { Component, ElementRef, Renderer2, Input, EventEmitter, Output, OnInit  } from '@angular/core';
 import { FormsModule, FormBuilder, FormGroup } from '@angular/forms'
 import { Printer, PaperType } from './type'
 import { HttpClient } from '@angular/common/http';
@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './print.component.html',
   styleUrl: './print.component.css'
 })
-export class PrintComponent {
+export class PrintComponent implements OnInit {
   alreadySubmittedFileName: string = "";
   filePages: number = 0;
   accurateFilePages: number = 0;
@@ -46,7 +46,7 @@ export class PrintComponent {
     this.http.get(this.serverURL + '/printer-storage').subscribe((res: any) => {
       this.listOfPrinters = (res.listOfPrinters as Printer[]);
     })
-    this.http.get(this.serverURL + '/valid-types').subscribe((res: any) => {
+    this.http.get(this.serverURL + '/types/partial').subscribe((res: any) => {
       this.supportedTypes = (res.listOfTypes as string[]);      
     })
     this.http.get(this.serverURL + '/paper-size').subscribe((res: any) => {

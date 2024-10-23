@@ -1,0 +1,104 @@
+<main class="m-10 space-y-4">
+    <div class="text-3xl font-bold">Log</div>
+    <div class="flex w-fit [&>div>div]:text-lg [&>div>div]:font-medium [&>div>div]:mx-5 [&>div>div]:my-1 [&>div>div]:hover:cursor-pointer *:duration-300 *:transition-all">
+        <div class="border-2 bg-white rounded-l-3xl border-r-0 *:text-black" [ngClass]="{'bg-green-500 *:text-white': (currentMode === 'students'),'bg-white *:text-black': (currentMode !== 'students')}">
+            <div class="" (click)="studentsMode()">Students</div>
+        </div>
+        <div class="border-2 bg-white rounded-r-3xl border-l-0 *:text-black" [ngClass]="{'bg-green-500 *:text-white': (currentMode === 'printers'),'bg-white *:text-black': (currentMode !== 'printers')}">
+            <div class="" (click)="printersMode()">Printers</div>
+        </div>
+    </div>
+    @switch (currentMode) {
+        @case ("students") {
+            <div class="border-2 max-h-[544px] border-slate-400 rounded-t-md bg-green-50 shadow-lg max-w-5xl">
+                <div class="*:inline-flex *:items-center px-3 my-4 space-x-3 space-y-2 [&>label>input]:mx-3 [&>label>input]:p-1.5 [&>label>input]:rounded-md">
+                    <label for="studentsID">
+                        Find ID: 
+                        <input type="number" name="studentsID" class="max-w-36 border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" [(ngModel)]="displayStudentID" (ngModelChange)="displayStudentIDOnChange()">
+                    </label>
+                    <label for="fromDate">
+                        From: 
+                        <input type="date" name="fromDate" class="border" [(ngModel)]="fromDate" [disabled]="showAllLogs" (ngModelChange)="updateLogs()">
+                    </label>
+                    <label for="toDate">
+                        To:
+                        <input type="date" name="toDate" class="border" [(ngModel)]="toDate" [disabled]="showAllLogs" (ngModelChange)="updateLogs()">
+                    </label>
+                </div>
+                <div class="*:inline-flex *:items-center px-3 my-4 space-x-3 [&>label>input]:mx-3 [&>label>input]:p-1.5">
+                    <label for="showAllStudents">
+                        Show all students: 
+                        <input type="checkbox" name="showAllStudents" class="accent-green-500 size-4" [(ngModel)]="showAllStudents" (ngModelChange)="showAllStudentsOnChange()">
+                    </label>
+                    <label for="showAllLogs">
+                        Show all logs:
+                        <input type="checkbox" name="showAllLogs" class="accent-green-500 size-4" [(ngModel)]="showAllLogs" (ngModelChange)="updateLogs()">
+                    </label>
+                </div>
+                <div class="overflow-x-auto overflow-y-auto bg-white">
+                    <table class="table-fixed border-slate-200 rounded-b-xl w-full" >
+                        <thead>
+                            <tr class="*:p-3 bg-green-200 text-green-700">
+                                <th class="w-40">StudentID</th>
+                                <th class="w-40">Date</th>
+                                <th class="w-20">PrinterID</th>
+                                <th class="w-96">File name</th>
+                                <th class="w-20">Size</th>
+                                <th class="w-20">Copies</th>
+                                <th class="w-12"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center [&>*>td]:p-3">
+                            @for (student of copyStudentLogs; track student.studentID; let idx = $index) {
+                                @if (student.studentID === displayStudentID?.toString() || showAllStudents) {
+                                    <tr class="border-t-2 border-slate-600">
+                                        <td class="border-r-2 font-semibold border-slate-600">{{student.studentID}}</td>
+                                        <!-- {{student | json}} -->
+                                        @if (student.logs.length) {
+                                            <td class="text-start">{{student.logs[0].printing_date}}</td>
+                                            <td>{{student.logs[0].printerID}}</td>
+                                            <td class="text-start">{{student.logs[0].file}}</td>
+                                            <!-- <td class="text-start break-all">fjasdlkfjlskfeiokjfoiweajfiowejifowejiofwjeiofjweiojfwiojdfkjpokwpeofkowp</td> -->
+                                            <td>{{student.logs[0].size}}</td>
+                                            <td>{{student.logs[0].copies}}</td>
+                                            @if(student.logs.length > 1){
+                                                <td>
+                                                    <svg class="size-7 duration-300 transition-all hover:cursor-pointer select-none" [ngClass]="{'rotate-0': student.showAll, 'rotate-90': !student.showAll}" (click)="toggleShowExtraLogs(idx)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
+                                                </td>
+                                            }
+                                            @else {
+                                                <td></td>
+                                            }
+                                        }
+                                        @else {
+                                            <td colspan="6" class="text-semibold text-start">Empty or not existed on the time given!</td>
+                                        }
+                                    </tr>
+                                    @if (student.showAll){
+                                        @for (log of student.logs; track $index; let first = $first) {
+                                            @if (!first){
+                                                <tr class="last:last-of-type:*:rounded-br-xl last:first-of-type:*:rounded-bl-xl">
+                                                    <td class="border-r-2 border-slate-600"></td>
+                                                    <td class="text-start">{{log.printing_date}}</td>
+                                                    <td>{{log.printerID}}</td>
+                                                    <td class="text-start">{{log.file}}</td>
+                                                    <td>{{log.size}}</td>
+                                                    <td>{{log.copies}}</td>
+                                                    <td></td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        @case ("printers") {
+
+        }
+    }
+</main>

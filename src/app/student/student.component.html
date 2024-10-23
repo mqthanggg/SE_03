@@ -15,7 +15,7 @@
         <div  (click)="changeCurrentTag('about-us')" class="" id="about-us">About Us</div>
           <div class="space-x-2 flex items-center mr-1" id="user">
             <img (click)="toggleDropDown()" class="size-5 max-h-none max-w-none hover:cursor-pointer" src="drop_down.png" alt="Drop down arrow">
-            <div id="user-drop-down" [class.hidden] = " !visibleDropDown" class="flex flex-col absolute max-w-fit top-full left-auto right-2">
+            <div id="user-drop-down" [class.hidden] = " !visibleDropDown" class="flex flex-col absolute max-w-fit top-full left-auto right-2 *:shadow-lg">
               <div class="duration-0 hover:duration-100 hover:bg-slate-200 bg-white flex p-3 items-center space-x-2 rounded-t-xl">
                 <img class="size-10 max-h-none max-w-none" [src]="avatarSrc" alt="Avatar">
                 <div>
@@ -30,8 +30,20 @@
       </div>
     </div>
   </div>
-  <app-home [class.hidden] = "currentTag !== 'home'" ></app-home>
-  <app-print [userID]="userID" [(userPapers)]="userPapers" [class.hidden] = "currentTag !== 'print'" ></app-print>
-  <app-buy [class.hidden] = "currentTag !== 'buy'" ></app-buy>
-  <app-about-us [class.hidden] = "currentTag !== 'about-us'"></app-about-us>
-  <app-history [userID]="userID" [isHidden]="(currentTag !== 'history')" [class.hidden] = "currentTag !== 'history'"></app-history>
+  @switch (currentTag) {
+    @case ("home") {
+      <app-home></app-home>
+    }
+    @case ("print") {
+      <app-print [userID]="userID" [(userPapers)]="userPapers" ></app-print>
+    }
+    @case ('buy'){
+      <app-buy></app-buy>
+    }
+    @case ('about-us') {
+      <app-about-us></app-about-us>
+    }
+    @case ('history') {
+      <app-history [userID]="userID"></app-history>
+    }
+  }

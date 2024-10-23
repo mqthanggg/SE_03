@@ -1,27 +1,51 @@
 <header class="flex align-middle bg-gradient-to-r from-green-700 to-green-500">
-    <div class="flex ml-1">
+    <div class="flex ml-4">
         <div class="size-16 flex">
             <img src="bkicon.png" alt="Bach Khoa icon" class="object-cover">
         </div>
         <div class="self-center *:text-white">
-            <p class="text-xs font-bold font-[Arial]">Ho Chi Minh city University of Technology</p>
+            <p class="text-sm font-bold">Ho Chi Minh city University of Technology</p>
             <p class="text-sm">Student Smart Printing Service</p>
         </div>
     </div>
 </header>
-<aside class="-ml-[12.4rem] duration-300 hover:ml-0 flex w-fit h-full">
-    <div class="pb-3 pl-6 pr-6 pt-4 flex bg-white flex-col shadow-lg text-green-700 justify-start">
-        <div class="font-bold border-b-2 border-slate-300 mb-3 pb-3">Managing list</div>
-        <div class="*:my-2">
-            <div>Options</div>
-            <div>Printers</div>
-            <div>Types</div>
-            <div>System configuration</div>
-            <div>View log</div>
-            <div>View report</div>
+<div class="flex">
+    <aside class="-ml-[12.4rem] duration-300 flex w-fit">
+        <div class="pb-3 pl-6 pr-6 pt-4 flex bg-lime-50 flex-col shadow-lg text-green-700 h-full ">
+            <div class="font-bold border-b-2 border-slate-300 mb-3 pb-3">Managing list</div>
+            <div class="*:my-5 *:whitespace-nowrap hover:*:underline hover:*:cursor-pointer *:no-underline hover:*:text-green-500">
+                <div (click)="page = 'dashboard'">Dashboard</div>
+                <div (click)="page = 'printers'">Printers</div>
+                <div (click)="page = 'system_config'">System configuration</div>
+                <div (click)="page = 'view_log'">View log</div>
+                <div (click)="page = 'view_report'">View report</div>
+                <div (click)="signOut()">Sign out</div>
+            </div>
         </div>
-    </div>
-    <div class="flex rounded-e-full bg-green-400 size-10 justify-center items-center opacity-35">
-        <img src="options-lines.png" alt="Option lines icon" class="size-6 mr-1">
-    </div>
-</aside>
+        <div class="flex rounded-e-full bg-green-400 size-10 justify-center items-center opacity-35 hover:cursor-pointer" (click)="asideOptionClicked()">
+            <img src="options-lines.png" alt="Option lines icon" class="size-6 mr-1">
+        </div>
+    </aside>
+    <main class="-ml-10 pl-10 bg-white w-screen min-h-screen">
+        @switch (page) {
+            @case ("dashboard") {
+                <app-dashboard></app-dashboard>
+            }
+            @case ("printers"){
+                <app-printers (ReloadEvent)="reload($event)"></app-printers>
+            }
+            @case ("system_config"){
+                <app-system-config (ReloadEvent)="reload($event)"></app-system-config>
+            }
+            @case ("view_log") {
+                <app-log (ReloadEvent)="reload($event)"></app-log>   
+            }
+            @case ("reload") {
+                <div class="h-screen bg-white"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <svg class="animate-spin size-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M222.7 32.1c5 16.9-4.6 34.8-21.5 39.8C121.8 95.6 64 169.1 64 256c0 106 86 192 192 192s192-86 192-192c0-86.9-57.8-160.4-137.1-184.1c-16.9-5-26.6-22.9-21.5-39.8s22.9-26.6 39.8-21.5C434.9 42.1 512 140 512 256c0 141.4-114.6 256-256 256S0 397.4 0 256C0 140 77.1 42.1 182.9 10.6c16.9-5 34.8 4.6 39.8 21.5z"/></svg>
+                </div>
+            }
+        }
+    </main>
+</div>

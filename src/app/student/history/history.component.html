@@ -2,10 +2,11 @@
     <div class="m-3">
         <p class="text-2xl">Printing history</p>
         <div class="m-3">
-            <span class="text-lg">Choose a time :</span>
-            <input type="number" [(ngModel)]="date" class="p-1 pl-2 mx-2 rounded-md border-2 border-blue-300 hover:border-blue-500 w-12 disabled:border-black disabled:bg-slate-100" [disabled]="isShowAllChecked"> /
-            <input type="number" [(ngModel)]="month" class="p-1 pl-2 mx-2 rounded-md border-2 border-blue-300 hover:border-blue-500 w-12 disabled:border-black disabled:bg-slate-100" [disabled]="isShowAllChecked"> /
-            <input type="number" [(ngModel)]="year" class="p-1 pl-2 mx-2 rounded-md border-2 border-blue-300 hover:border-blue-500 w-20 disabled:border-black disabled:bg-slate-100" [disabled]="isShowAllChecked">
+            <span class="text-lg">From:</span>
+            <input type="date" name="fromDate" class="p-1 pl-2 mx-2 rounded-md border-2 border-blue-300 hover:border-blue-500 disabled:border-black disabled:bg-slate-100" [(ngModel)]="fromDate" [disabled]="isShowAllChecked">
+            <span class="text-lg">To:</span>
+            <input type="date" name="toDate" class="p-1 pl-2 mx-2 rounded-md border-2 border-blue-300 hover:border-blue-500 disabled:border-black disabled:bg-slate-100" [(ngModel)]="toDate" [disabled]="isShowAllChecked">
+
             <div class="flex items-center">
                 <p class="text-lg mr-2">Show all?</p> <input type="checkbox" name="show-all" class="size-5" [(ngModel)]="isShowAllChecked">
             </div>

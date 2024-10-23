@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const { default: countPages } = require('page-count');
 const PORT = 4000;
+const moment = require('moment');
 
 const temp_storage = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -28,12 +29,44 @@ const temp_files = multer({storage: temp_storage});
 app.use(express.json(), cors(), express.static(path.join(__dirname, '/users_info')));
 
 app.get('/',(req, res) => {
-    res.send({status: 200});
+    const defaultConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '/specs_info/default_pages.json')));
+    const {defaultPages, defaultDate, added} = defaultConfig;    
+    if (moment().format("YYYY-MM-DD") !== defaultDate) {
+        if (added){
+            fs.writeFileSync(path.join(__dirname, '/specs_info/default_pages.json'), JSON.stringify({defaultPages: defaultPages, defaultDate: defaultDate, added: false},null,4));
+            res.send({status: 200});
+        }
+        else res.send({status: 200});
+    }
+    else {
+        if (!added){
+            let users = JSON.parse(fs.readFileSync(path.join(__dirname, '/users_info/users.json')));
+            users.forEach((user) => {
+                if (user.role === "student") user.papers += defaultPages;
+            })
+            fs.writeFileSync(path.join(__dirname, "/users_info/users.json"),JSON.stringify(users,null,4));
+            added = true;
+            fs.writeFileSync(path.join(__dirname, '/specs_info/default_pages.json'), JSON.stringify({defaultPages, defaultDate, added},null,4));
+            res.send({status: 200});
+        }
+    }
 })
 
 app.post('/printing-request', (req, res) => {
     console.log(req.body);
+
+    let printers_file = fs.readFileSync(path.join(__dirname, '/printers_info/printer_storage.json'));
     
+    let printers_info = JSON.parse(printers_file);
+    
+    if (printers_info.find((printer) => {
+        return printer.id === Number(req.body.printer_id);
+    }).status !== "enabled"){
+        return res.send({
+            status: 0
+        })
+    }
+
     let users_file = fs.readFileSync(path.join(__dirname, '/users_info/users.json'))
     let users_info = JSON.parse(users_file);
 
@@ -61,12 +94,8 @@ app.post('/printing-request', (req, res) => {
 
     fs.writeFileSync(path.join(__dirname, '/logs_info/logs.json'), JSON.stringify(logs, null, 4));
 
-    let printers_file = fs.readFileSync(path.join(__dirname, '/printers_info/printer_storage.json'));
-    
-    let printers_info = JSON.parse(printers_file);
-    
     printers_info.forEach((printer) => {
-        if (printer.id === req.body.printer_id){
+        if (printer.id === Number(req.body.printer_id)){
             printer.logs.push(newLog)
         }
     })
@@ -169,11 +198,66 @@ app.get('/printer-storage', (req, res) => {
     })
 })
 
-app.get('/valid-types', (req, res) => {
-    let types_json = fs.readFileSync(path.join(__dirname, '/specs_info/valid_types.json'));
-    let listOfTypes = JSON.parse(types_json)
+app.post('/printer_storage', (req, res) => {
+    let printers_json = fs.readFileSync(path.join(__dirname, '/printers_info/printer_storage.json'));
+    let listOfPrinters = JSON.parse(printers_json);
+    listOfPrinters.push(req.body);
+    listOfPrinters.sort(
+        (printerA, printerB) => {
+            return printerA.id - printerB.id;
+        }
+    )
+    fs.writeFileSync(path.join(__dirname, '/printers_info/printer_storage.json'), JSON.stringify(listOfPrinters, null, 4));
     res.send({
-        listOfTypes: listOfTypes,
+        status: 200
+    })
+})
+
+app.put('/printer_storage/:idx', (req, res) => {
+    let printers_json = fs.readFileSync(path.join(__dirname, '/printers_info/printer_storage.json'));
+    let listOfPrinters = JSON.parse(printers_json);
+    Object.assign(listOfPrinters[req.params.idx], req.body);
+    fs.writeFileSync(path.join(__dirname, '/printers_info/printer_storage.json'), JSON.stringify(listOfPrinters, null, 4));
+    res.send({
+        status: 200
+    })
+})
+
+app.delete('/printer_storage/:idx', (req, res) => {
+    let printers_json = fs.readFileSync(path.join(__dirname, '/printers_info/printer_storage.json'));
+    let listOfPrinters = JSON.parse(printers_json);
+    listOfPrinters.splice(req.params.idx,1);
+    fs.writeFileSync(path.join(__dirname, '/printers_info/printer_storage.json'), JSON.stringify(listOfPrinters, null, 4));
+    res.send({
+        status: 200
+    })
+})
+
+app.get('/types/:type', (req, res) =>{
+    let data = JSON.parse(fs.readFileSync(path.join(__dirname, '/specs_info/valid_types.json')));
+    switch (req.params.type) {
+        case "full":
+            return res.send({
+                status: 200,
+                data: data
+            })
+        case "partial":
+            return res.send({
+                listOfTypes: data.map((type) => {
+                    if (type.allowed) return type.type;
+                }),
+                status: 200
+            })
+        default:
+            return res.send({
+                status: 404
+            })
+    }
+})
+
+app.put('/types', (req, res) => {
+    fs.writeFileSync(path.join(__dirname, "/specs_info/valid_types.json"), JSON.stringify(req.body.data, null, 4));
+    res.send({
         status: 200
     })
 })
@@ -206,7 +290,7 @@ app.post('/sign-up', avatar_files_req.single('avatar_file'),(req, res) => {
     let users_json = fs.readFileSync(path.join(__dirname, '/users_info/users.json'));
     let listOfUsers = JSON.parse(users_json);
     let default_json = fs.readFileSync(path.join(__dirname, '/specs_info/default_pages.json'));
-    let default_papers = JSON.parse(default_json).default;
+    let default_papers = JSON.parse(default_json).defaultPages;
     listOfUsers.push({
         mail: req.body.mail,
         password: req.body.password,
@@ -266,7 +350,13 @@ app.get('/user-avatar/:userID', (req, res) => {
 app.post('/file-submit',temp_files.single('file'), async (req, res) => {
     if (req.body.submitted_file !== req.file.originalname && req.body.submitted_file !== "") 
         fs.unlinkSync(path.join(__dirname, `/temp_file/${req.body.submitted_file}`))
-    let data = await countPages(fs.readFileSync(path.join(__dirname, `/temp_file/${req.file.originalname}`)), path.extname(req.file.originalname).substring(1))
+    let data = null;
+    if (
+        path.extname(req.file.originalname) === ".docx" ||
+        path.extname(req.file.originalname) === ".pdf" ||
+        path.extname(req.file.originalname) === ".pptx"
+    )
+        data = await countPages(fs.readFileSync(path.join(__dirname, `/temp_file/${req.file.originalname}`)), path.extname(req.file.originalname).substring(1))
     res.send({
         file_pages: data
     })    
@@ -280,5 +370,53 @@ app.get('/user-log/:id', (req, res) => {
     res.send({
         status: 200,
         logs: userLogs
+    })
+})
+
+app.get('/dashboard', (req, res) => {
+    let users = JSON.parse(fs.readFileSync(path.join(__dirname, '/users_info/users.json')));
+    users = users.filter((user) => {
+        return user.role === "student";
+    })
+    let printers = JSON.parse(fs.readFileSync(path.join(__dirname, '/printers_info/printer_storage.json')));
+    let logs = JSON.parse(fs.readFileSync(path.join(__dirname, '/logs_info/logs.json')));
+    res.send({
+        users: users.length,
+        printers: printers.length,
+        logs: logs.length,
+        status: 200
+    })
+}) 
+
+
+
+app.get('/default-pages', (req, res) => {
+    let data = JSON.parse(fs.readFileSync(path.join(__dirname, '/specs_info/default_pages.json')));
+    res.send({
+        status: 200,
+        data: data
+    })
+})
+
+app.post('/default-pages', (req, res)=>{
+    fs.writeFileSync(path.join(__dirname, "/specs_info/default_pages.json"), JSON.stringify(req.body.data,null,4));
+    res.send({
+        status: 200
+    })
+})
+
+app.get('/student-logs', (req, res) => {
+    let data = JSON.parse(fs.readFileSync(path.join(__dirname, '/users_info/users.json')));
+    let res_data = data.filter((student) => {
+        return student.role === "student"
+    }).map((student) => {
+        return {
+            studentID: student.userID,
+            logs: student.logs
+        }
+    })
+    res.send({
+        status: 200,
+        data:  res_data
     })
 })

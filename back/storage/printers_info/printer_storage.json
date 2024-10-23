@@ -1,21 +1,39 @@
 [
     {
-        "id": "0",
+        "id": 0,
         "manufacturer": "HP",
         "model": "OfficeJet",
-        "desc": "Supports color printing",
+        "desc": "New description",
         "location": {
             "campus": "LTK",
             "building": "B1",
             "room": 213
         },
-        "status": "available",
+        "status": "enabled",
         "logs": [
+            {
+                "userID": "2252761",
+                "printerID": "0",
+                "printing_date": "Tue Oct 22 2024",
+                "copies": 4,
+                "size": "A2",
+                "papers_used": 720,
+                "file_name": "lec2_34.1.pdf"
+            },
+            {
+                "userID": "2252761",
+                "printerID": "0",
+                "printing_date": "Tue Oct 22 2024",
+                "copies": 1,
+                "size": "A4",
+                "papers_used": 45,
+                "file_name": "lec2_34.1.pdf"
+            }
         ]
     },
     {
-        "id": "1",
-        "manufacturer": "Cannon",
+        "id": 1,
+        "manufacturer": "Canon",
         "model": "PIXMA",
         "desc": "Supports both sided printing",
         "location": {
@@ -23,8 +41,91 @@
             "building": "B1",
             "room": 210
         },
-        "status": "available",
+        "status": "enabled",
+        "logs": []
+    },
+    {
+        "id": 2,
+        "manufacturer": "Brother",
+        "model": "HL-L2350DW",
+        "desc": "Monochrome laser printer",
+        "location": {
+            "campus": "LTK",
+            "building": "B3",
+            "room": 305
+        },
+        "status": "enabled",
+        "logs": []
+    },
+    {
+        "id": 3,
+        "manufacturer": "Epson",
+        "model": "EcoTank",
+        "desc": "Eco-friendly ink tank system",
+        "location": {
+            "campus": "LTK",
+            "building": "B1",
+            "room": 110
+        },
+        "status": "enabled",
+        "logs": []
+    },
+    {
+        "id": 4,
+        "manufacturer": "HP",
+        "model": "LaserJet",
+        "desc": "Fast, high-volume printing",
+        "location": {
+            "campus": "LTK",
+            "building": "B4",
+            "room": 220
+        },
+        "status": "enabled",
+        "logs": []
+    },
+    {
+        "id": 5,
+        "manufacturer": "HP",
+        "model": "LaserJet Pro M404dn",
+        "desc": "High-performance monochrome printing",
+        "location": {
+            "campus": "LTK",
+            "building": "C3",
+            "room": 105
+        },
+        "status": "enabled",
+        "logs": []
+    },
+    {
+        "id": 6,
+        "manufacturer": "HP",
+        "model": "LaserJet Pro M404dn",
+        "desc": "New description",
+        "location": {
+            "campus": "LTK",
+            "building": "C3",
+            "room": 123
+        },
+        "status": "enabled",
         "logs": [
+            {
+                "userID": "225761",
+                "printerID": "6",
+                "printing_date": "Tue Oct 22 2024",
+                "copies": 4,
+                "size": "A3",
+                "papers_used": 8,
+                "file_name": "CV.pdf"
+            },
+            {
+                "userID": "225761",
+                "printerID": "6",
+                "printing_date": "Tue Oct 22 2024",
+                "copies": 4,
+                "size": "A3",
+                "papers_used": 8,
+                "file_name": "CV_2024.pdf"
+            }
         ]
     }
 ]

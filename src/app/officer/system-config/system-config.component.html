@@ -1,0 +1,25 @@
+<main class="m-10 space-y-4">
+    <div class="text-3xl font-bold">System configuration</div>
+    <div class="flex flex-col [&>div>span]:text-xl [&>div>span]:font-medium [&>div>span]:inline-flex [&>div>span]:items-center *:my-3 [&>div>input]:ml-3 [&>div>input]:p-1 [&>div>input]:border-2 [&>div>input]:rounded-lg ">
+        <div class="flex">
+            <span class="">Date for giving default pages:</span>
+            <input type="date" [(ngModel)]="defaultDate" >
+        </div>
+        <div class="flex">
+            <span class="">Default number of pages:</span>
+            <input type="number" class="max-w-24" [(ngModel)]="defaultPages">
+        </div>
+        <div class="">
+            <span class="">Permitted file types: </span>
+            <div class="flex flex-col marker:*">
+                @for (type of listOfTypes; track type.ext) {
+                    <div>
+                        <input type="checkbox" [(ngModel)]="type.allowed" [name]="type.ext" class="accent-green-400">
+                        <label [htmlFor]="type.ext" class="text-lg mx-1">{{type.ext}}</label>
+                    </div>
+                }
+            </div>
+        </div>
+        <button (click)="updateData()" class="duration-300 hover:bg-green-400 hover:cursor-pointer font-semibold px-3 py-2 rounded-xl bg-green-500 text-white max-w-20">Update</button>
+    </div>
+</main>

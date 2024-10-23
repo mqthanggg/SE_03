@@ -1,5 +1,37 @@
 [
-    "application/msword",
-    "application/pdf",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    {
+        "ext": ".doc",
+        "type": "application/msword",
+        "allowed": true
+    },
+    {
+        "ext": ".pdf",
+        "type": "application/pdf",
+        "allowed": true
+    },
+    {
+        "ext": ".docx",
+        "type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "allowed": false
+    },
+    {
+        "ext": ".ppt",
+        "type": "application/vns.ms-powerpoint",
+        "allowed": false
+    },
+    {
+        "ext": ".pptx",
+        "type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "allowed": true
+    },
+    {
+        "ext": ".xls",
+        "type": "application/vnd.ms-excel",
+        "allowed": true
+    },
+    {
+        "ext": ".xlsx",
+        "type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "allowed": true
+    }
 ]

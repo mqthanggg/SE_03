@@ -1,2 +1,61 @@
 [
+    {
+        "mail": "mq.t@hcmut.edu.vn",
+        "password": "12345678",
+        "userID": "225761",
+        "papers": 84,
+        "role": "student",
+        "logs": [
+            {
+                "userID": "225761",
+                "printerID": "6",
+                "file": "CV.pdf",
+                "printing_date": "Tue Oct 22 2024",
+                "copies": 4,
+                "papers_used": 8,
+                "size": "A3"
+            },
+            {
+                "userID": "225761",
+                "printerID": "6",
+                "file": "CV_2024.pdf",
+                "printing_date": "Tue Oct 22 2024",
+                "copies": 4,
+                "papers_used": 8,
+                "size": "A3"
+            }
+        ]
+    },
+    {
+        "mail": "mq.tofficer@hcmut.edu.vn",
+        "password": "12345678",
+        "role": "officer"
+    },
+    {
+        "mail": "thang.mai0304@hcmut.edu.vn",
+        "password": "phuongthao0412",
+        "userID": "2252761",
+        "role": "student",
+        "papers": 235,
+        "logs": [
+            {
+                "userID": "2252761",
+                "printerID": "0",
+                "file": "lec2_34.1.pdf",
+                "printing_date": "Tue Oct 22 2024",
+                "copies": 4,
+                "papers_used": 720,
+                "size": "A2"
+            },
+            {
+                "userID": "2252761",
+                "printerID": "0",
+                "file": "lec2_34.1.pdf",
+                "printing_date": "Tue Oct 22 2024",
+                "copies": 1,
+                "papers_used": 45,
+                "size": "A4"
+            }
+        ]
+    }
 ]

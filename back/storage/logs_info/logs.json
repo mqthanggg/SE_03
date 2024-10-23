@@ -1,2 +1,38 @@
 [
+    {
+        "userID": "225761",
+        "printerID": "6",
+        "printing_date": "Tue Oct 22 2024",
+        "copies": 4,
+        "size": "A3",
+        "papers_used": 8,
+        "file_name": "CV.pdf"
+    },
+    {
+        "userID": "225761",
+        "printerID": "6",
+        "printing_date": "Tue Oct 22 2024",
+        "copies": 4,
+        "size": "A3",
+        "papers_used": 8,
+        "file_name": "CV_2024.pdf"
+    },
+    {
+        "userID": "2252761",
+        "printerID": "0",
+        "printing_date": "Tue Oct 22 2024",
+        "copies": 4,
+        "size": "A2",
+        "papers_used": 720,
+        "file_name": "lec2_34.1.pdf"
+    },
+    {
+        "userID": "2252761",
+        "printerID": "0",
+        "printing_date": "Tue Oct 22 2024",
+        "copies": 1,
+        "size": "A4",
+        "papers_used": 45,
+        "file_name": "lec2_34.1.pdf"
+    }
 ]

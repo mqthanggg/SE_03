@@ -4,7 +4,7 @@
         <div class="flex space-x-4 overflow-x-auto">
             @for (printer of listOfPrinters; track printer.id) {
                 @if (printer.status !== "disabled") {
-                    <div [id]="generateID(printer.id)" (click)="printerClicked(printer.id)" class="printer duration-0 hover:cursor-pointer hover:bg-blue-100 hover:duration-75 bg-white border-slate-500 border-2 p-6 rounded-lg">
+                    <div [id]="generateID(printer.id)" (click)="printerClicked(printer.id)" class="flex flex-col flex-shrink-0 duration-0 hover:cursor-pointer hover:bg-blue-100 hover:duration-75 bg-white border-slate-500 border-2 p-6 rounded-lg w-80">
                         <img class="mx-auto size-32 pointer-events-none" src="printer.png" alt="Printer image">
                         <div class="pointer-events-none flex">
                             <p class="font-medium">Manufacturer: &nbsp;</p>
@@ -115,7 +115,7 @@
         <p class="text-red-600 m-3 text-2xl">Please select a printer!</p>
     }
 </div>
-<div id="pop-up-bg" class="hidden w-screen h-screen bg-slate-400 bg-opacity-50 absolute top-0 left-0">
+<div id="pop-up-bg" class="hidden w-screen h-screen bg-slate-400 bg-opacity-50 fixed top-0 left-0">
 </div>
 <div id="print-pop-up" class="opacity-0 flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl max-w-xl flex-col scale-0 transition duration-500 ease-in-out delay-150">
     <div class="flex items-center mx-auto flex-col p-6">
