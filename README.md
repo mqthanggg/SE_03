@@ -1,4 +1,8 @@
-# Idk
+# HCMUT_SPSS
+
+## Introduction
+
+HCMUT_SPSS is a smart printing service designed to streamline document printing for students at HCMUT. The system provides a user-friendly interface for managing printers, print jobs, and student printing quotas.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.2.
 
